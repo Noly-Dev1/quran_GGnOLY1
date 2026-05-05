@@ -23,6 +23,41 @@ import {
   GraduationCap,
   LucideIcon
 } from 'lucide-react';
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import firebaseConfig from '../firebase-applet-config.json';
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+
+// Error Handling
+enum OperationType {
+  CREATE = 'create',
+  UPDATE = 'update',
+  DELETE = 'delete',
+  LIST = 'list',
+  GET = 'get',
+  WRITE = 'write',
+}
+
+interface FirestoreErrorInfo {
+  error: string;
+  operationType: OperationType;
+  path: string | null;
+  authInfo: Record<string, unknown>;
+}
+
+function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
+  const errInfo: FirestoreErrorInfo = {
+    error: error instanceof Error ? error.message : String(error),
+    authInfo: {},
+    operationType,
+    path
+  };
+  console.error('Firestore Error: ', JSON.stringify(errInfo));
+  throw new Error(JSON.stringify(errInfo));
+}
 
 // Types
 interface Teacher {
@@ -115,6 +150,7 @@ const FAQItem = ({ question, answer }: { question: string, answer: string }) => 
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
 
   const teachers: Teacher[] = [
@@ -150,13 +186,69 @@ export default function App() {
       schedule: [
         "من الأحد إلى الأربعاء: 8:30 - 10:30 مساءً (بتوقيت مكة المكرمة)"
       ]
+    },
+    {
+      name: "أ. سمية",
+      schedule: [
+        "من السبت إلى الخميس: 4 - 6 مساءً (بتوقيت مكة المكرمة)"
+      ]
     }
   ];
 
-  const handleFormSubmit = (e: FormEvent) => {
+  const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setFormSubmitted(true);
-    setTimeout(() => setFormSubmitted(false), 5000);
+    setIsSubmitting(true);
+    
+    try {
+      const formData = new FormData(e.currentTarget);
+      
+      const name = formData.get('fullName') as string;
+      const ageStr = formData.get('age') as string;
+      const teacher = formData.get('teacher') as string;
+      const juz = formData.get('juz') as string;
+      const whatsapp = formData.get('whatsapp') as string;
+      const notes = formData.get('notes') as string;
+
+      const age = parseInt(ageStr, 10);
+
+      // 1. Save to Firestore
+      const registrationsPath = 'registrations';
+      try {
+        await addDoc(collection(db, registrationsPath), {
+          fullName: name,
+          age: age,
+          teacher: teacher,
+          juz: juz,
+          whatsapp: whatsapp,
+          notes: notes || '',
+          createdAt: serverTimestamp()
+        });
+      } catch (error) {
+        handleFirestoreError(error, OperationType.WRITE, registrationsPath);
+      }
+
+      // 2. Prepare WhatsApp message
+      const message = `*استمارة اشتراك جديدة*%0A%0A` +
+        `*الاسم الكامل:* ${name}%0A` +
+        `*العمر:* ${age}%0A` +
+        `*المعلمة المختارة:* ${teacher}%0A` +
+        `*كم جزء محفوظ:* ${juz}%0A` +
+        `*رقم الواتساب:* ${whatsapp}%0A` +
+        `*ملاحظات إضافية:* ${notes || 'لا يوجد'}`;
+
+      const whatsappUrl = `https://wa.me/966547013085?text=${message}`;
+      
+      // 3. Open WhatsApp
+      window.open(whatsappUrl, '_blank');
+      
+      setFormSubmitted(true);
+      setTimeout(() => setFormSubmitted(false), 5000);
+    } catch (err) {
+      console.error(err);
+      alert('عذراً، حدث خطأ أثناء إرسال البيانات. يرجى المحاولة مرة أخرى.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -370,6 +462,22 @@ export default function App() {
               question="ماذا أحتاج للبدء في الدروس؟"
               answer="تحتاجين فقط إلى جهاز (كمبيوتر أو هاتف) مثبت عليه برنامج Zoom، واتصال جيد بالإنترنت والمصحف الخاص بكِ."
             />
+            <FAQItem 
+              question="كيف يتم التواصل بعد إرسال البيانات؟"
+              answer="سيصلنا طلبكِ فوراً عبر قاعدة البيانات، وسيقوم فريق العمل بالتواصل معكِ عبر الواتساب خلال 24-48 ساعة لتأكيد موعد التجربة أو البدء."
+            />
+            <FAQItem 
+              question="هل توجد حلقات تجريبية مجانية؟"
+              answer="نعم، نؤمن بأن الطالبة يجب أن تشعر بالارتياح مع المعلمة أولاً، لذا نوفر أول حصة للقاء والتعارف وتقييم المستوى مجاناً."
+            />
+            <FAQItem 
+              question="ماذا لو كنتُ في مستوى 'مبتدئ جداً' (أحتاج للقاعدة النورانية)؟"
+              answer="معلماتنا مؤهلات لتعليم المبتدئات من الصفر، نبدأ معكِ من مخارج الحروف والقاعدة النورانية حتى تصلي لطلاقة القراءة والحفظ."
+            />
+            <FAQItem 
+              question="هل يتم منح إجازات أو شهادات؟"
+              answer="نعم، نوفر للطالبات اللواتي يختمن أجزاءً أو القرآن كاملاً شهادات تكريمية، كما يوجد مسار خاص للإجازات بالسند المتصل للنبي ﷺ مع المعلمات المجازات."
+            />
           </div>
         </div>
       </section>
@@ -384,18 +492,7 @@ export default function App() {
               املئي النموذج وسنقوم بالتواصل معكِ عبر الواتساب لتحديد موعد الحصة التجرِيبية المجانية والاتفاق على جدول الحصص.
             </p>
             
-            <div className="editorial-card bg-sand border-none">
-              <div className="section-label">تواصل مباشر</div>
-              <div className="flex items-center gap-6">
-                <div className="bg-primary text-white p-4 shadow-lg shadow-primary/20">
-                  <Send className="rotate-180" size={24} />
-                </div>
-                <div>
-                  <p className="font-bold text-lg mb-1">انضمي لمجموعتنا على تليجرام</p>
-                  <a href="#" className="font-sans text-xs font-bold text-accent uppercase tracking-[0.2em] hover:opacity-70 transition-opacity">رابط المجموعة الرسمي</a>
-                </div>
-              </div>
-            </div>
+
           </div>
 
           <div className="editorial-card !p-12 lg:sticky lg:top-32">
@@ -415,18 +512,18 @@ export default function App() {
                 <div className="grid md:grid-cols-2 gap-10">
                   <div className="space-y-2">
                     <label className="text-[10px] uppercase font-bold text-accent tracking-widest block font-sans">الاسم الكامل</label>
-                    <input type="text" required className="input-editorial" placeholder="اكتبي اسمكِ هنا..." />
+                    <input name="fullName" type="text" required className="input-editorial" placeholder="اكتبي اسمكِ هنا..." />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] uppercase font-bold text-accent tracking-widest block font-sans">العمر</label>
-                    <input type="number" required min="2" className="input-editorial" placeholder="مثلاً: 25" />
+                    <input name="age" type="number" required min="2" className="input-editorial" placeholder="مثلاً: 25" />
                   </div>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-10">
                   <div className="space-y-2">
                     <label className="text-[10px] uppercase font-bold text-accent tracking-widest block font-sans">اختيار المعلمة</label>
-                    <select required defaultValue="" className="input-editorial cursor-pointer">
+                    <select name="teacher" required defaultValue="" className="input-editorial cursor-pointer">
                       <option value="" disabled>إختيار المعلمة...</option>
                       {teachers.map((teacher, idx) => (
                         <option key={idx} value={teacher.name}>{teacher.name}</option>
@@ -435,7 +532,7 @@ export default function App() {
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] uppercase font-bold text-accent tracking-widest block font-sans">كم جزء محفوظ؟</label>
-                    <select defaultValue="البدء من الصفر" className="input-editorial cursor-pointer">
+                    <select name="juz" defaultValue="البدء من الصفر" className="input-editorial cursor-pointer">
                       <option value="البدء من الصفر">البدء من الصفر</option>
                       {[...Array(30)].map((_, i) => (
                         <option key={i + 1}>
@@ -449,6 +546,7 @@ export default function App() {
                 <div className="space-y-2">
                   <label className="text-[10px] uppercase font-bold text-accent tracking-widest block font-sans">رقم الواتساب</label>
                   <input 
+                    name="whatsapp"
                     type="tel" 
                     required 
                     pattern="[0-9]*"
@@ -465,7 +563,7 @@ export default function App() {
 
                 <div className="space-y-2">
                   <label className="text-[10px] uppercase font-bold text-accent tracking-widest block font-sans">ملاحظات إضافية</label>
-                  <textarea className="input-editorial h-20 resize-none" placeholder="ملاحظات إضافية أو تفضيلات المواعيد..."></textarea>
+                  <textarea name="notes" className="input-editorial h-20 resize-none" placeholder="ملاحظات إضافية أو تفضيلات المواعيد..."></textarea>
                 </div>
 
                 <button type="submit" className="w-full bg-primary text-white py-6 font-sans font-bold uppercase tracking-[0.3em] hover:bg-accent transition-all shadow-lg hover:shadow-primary/20">
@@ -494,8 +592,11 @@ export default function App() {
                 <a href="#" className="w-12 h-12 bg-[#e4405f] rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform shadow-lg shadow-[#e4405f]/20" title="إنستغرام">
                   <Instagram size={24} />
                 </a>
-                <a href="#" className="w-12 h-12 bg-[#25D366] rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform shadow-lg shadow-[#25D366]/20" title="واتساب">
+                <a href="https://wa.me/966547013085" target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-[#25D366] rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform shadow-lg shadow-[#25D366]/20" title="واتساب">
                   <MessageCircle size={24} />
+                </a>
+                <a href="https://t.me/+966547013085" target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-[#0088cc] rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform shadow-lg shadow-[#0088cc]/20" title="تلجرام">
+                  <Send size={24} className="rotate-180" />
                 </a>
               </div>
             </div>
