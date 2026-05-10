@@ -9,11 +9,9 @@ import {
   BookOpen, 
   Clock, 
   Users, 
-  CheckCircle2, 
   ChevronDown, 
   Send, 
   Video, 
-  Star,
   MessageCircle,
   Instagram,
   Menu,
@@ -64,7 +62,6 @@ function handleFirestoreError(error: unknown, operationType: OperationType, path
 interface Teacher {
   name: string;
   schedule: string[];
-  achievements: string[];
   specialties: string[];
 }
 
@@ -97,7 +94,6 @@ interface TeacherCardProps {
   teacher: Teacher;
   labels: {
     schedule: string;
-    achievements: string;
     specialties: string;
   };
 }
@@ -116,22 +112,6 @@ const TeacherCard: FC<TeacherCardProps> = ({ teacher, labels }) => {
       </h4>
       
       <div className="space-y-6 flex-grow">
-        {/* Achievements Section */}
-        <div>
-          <div className="text-[10px] uppercase font-bold text-accent tracking-widest mb-3 flex items-center gap-2">
-            <Star size={12} />
-            <span>{labels.achievements}</span>
-          </div>
-          <div className="space-y-2">
-            {teacher.achievements.map((ach, idx) => (
-              <div key={idx} className="flex items-start gap-2 text-primary/80">
-                <CheckCircle2 size={14} className="mt-1 text-secondary shrink-0" />
-                <span className="text-xs font-sans font-medium">{ach}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
         {/* Specialties Section */}
         <div>
           <div className="text-[10px] uppercase font-bold text-accent tracking-widest mb-3 flex items-center gap-2">
@@ -236,12 +216,12 @@ export default function App() {
   const whatsappUrl = `https://wa.me/${whatsappNumber}`;
 
   const teacherNames: Record<Language, string[]> = {
-    ar: ["أ. أروى", "أ. يمنى", "أ. منار", "أ. فاطمة", "أ. بشرى", "أ. سمية"],
-    en: ["Arwa", "Yomna", "Manar", "Fatima", "Bushra", "Somaya"],
-    fr: ["Arwa", "Yomna", "Manar", "Fatima", "Bushra", "Somaya"],
-    tr: ["Arwa", "Yomna", "Manar", "Fatima", "Bushra", "Somaya"],
-    id: ["Arwa", "Yomna", "Manar", "Fatima", "Bushra", "Somaya"],
-    ur: ["استانی ارویٰ", "استانی یمنیٰ", "استانی منار", "استانی فاطمہ", "استانی بشرہ", "استانی سمیہ"]
+    ar: ["أ. أروى", "أ. يمنى", "أ. منار", "أ. فاطمة", "أ. سمية"],
+    en: ["Arwa", "Yomna", "Manar", "Fatima", "Somaya"],
+    fr: ["Arwa", "Yomna", "Manar", "Fatima", "Somaya"],
+    tr: ["Arwa", "Yomna", "Manar", "Fatima", "Somaya"],
+    id: ["Arwa", "Yomna", "Manar", "Fatima", "Somaya"],
+    ur: ["استانی ارویٰ", "استانی یمنیٰ", "استانی منار", "استانی فاطمہ", "استانی سمیہ"]
   };
 
   const getSchedules = (langCode: Language): string[][] => {
@@ -251,7 +231,6 @@ export default function App() {
         ["Sun-Thu: 7-10 AM (Makkah Time)"], 
         ["Sat-Thu: 7-10 AM (Makkah Time)"], 
         ["Mon-Wed: 9-11 AM (Makkah Time)"], 
-        ["Sun-Wed: 8:30-10:30 PM (Makkah Time)"], 
         ["Daily: 6:30 - 8:30 AM (Makkah Time)", "Daily: 10:30 - 11:30 PM (Makkah Time)"]
       ];
       case 'fr': return [
@@ -259,7 +238,6 @@ export default function App() {
         ["Dim-Jeu: 7-10h (Heure Mecque)"], 
         ["Sam-Jeu: 7-10h (Heure Mecque)"], 
         ["Lun-Mer: 9-11h (Heure Mecque)"], 
-        ["Dim-Mer: 20:30-22:30 (Heure Mecque)"], 
         ["Tous les jours: 6:30 - 8:30 (Heure Mecque)", "Tous les jours: 22:30 - 23:30 (Heure Mecque)"]
       ];
       case 'tr': return [
@@ -267,7 +245,6 @@ export default function App() {
         ["Paz-Per: 07:00-10:00 (Mekke Saati)"], 
         ["Cmt-Per: 07:00-10:00 (Mekke Saati)"], 
         ["Pzt-Çar: 09:00-11:00 (Mekke Saati)"], 
-        ["Paz-Çar: 20:30-22:30 (Mekke Saati)"], 
         ["Her gün: 06:30 - 08:30 (Mekke Saati)", "Her gün: 22:30 - 23:30 (Mekke Saati)"]
       ];
       case 'id': return [
@@ -275,23 +252,20 @@ export default function App() {
         ["Aha-Kam: 07:00-10:00 (Waktu Makkah)"], 
         ["Sab-Kam: 07:00-10:00 (Waktu Makkah)"], 
         ["Sen-Rab: 09:00-11:00 (Waktu Makkah)"], 
-        ["Aha-Rab: 20:30-22:30 (Waktu Makkah)"], 
         ["Setiap hari: 06:30 - 08:30 (Waktu Makkah)", "Setiap hari: 22:30 - 23:30 (Waktu Makkah)"]
       ];
       case 'ur': return [
-        ["پیر/بدھ: 7 - 10 بجے صبح (مکه مکرمہ ٹائم)", "پیر/بدھ: 1 - 3 بجے دوپهر", "پیر/بدھ: 4 - 6 بجے شام", "پیر/بدھ: 8 - 10 بجے رات"], 
-        ["اتوار تا جمعرات: 7 - 10 بجے صبح (مکه مکرمہ ٹائم)"], 
-        ["ہفتہ تا جمعرات: 7 - 10 بجے صبح (مکه مکرمہ ٹائم)"], 
-        ["پیر تا بدھ: 9 - 11 بجے صبح (مکه مکرمہ ٹائم)"], 
-        ["اتوار تا بدھ: 8:30 - 10:30 بجے رات (مکه مکرمہ ٹائم)"], 
-        ["روزانہ: 6:30 - 8:30 صبح (مکه مکرمہ ٹائم)", "روزانہ: 10:30 - 11:30 شام (مکه مکرمہ ٹائم)"]
+        ["پیر/بدھ: 7 - 10 بجے صبح (مکہ مکرمہ ٹائم)", "پیر/بدھ: 1 - 3 بجے دوپہر", "پیر/بدھ: 4 - 6 بجے شام", "پیر/بدھ: 8 - 10 بجے رات"], 
+        ["اتوار تا جمعرات: 7 - 10 بجے صبح (مکہ مکرمہ ٹائم)"], 
+        ["ہفتہ تا جمعرات: 7 - 10 بجے صبح (مکہ مکرمہ ٹائم)"], 
+        ["پیر تا بدھ: 9 - 11 بجے صبح (مکہ مکرمہ ٹائم)"], 
+        ["روزانہ: 6:30 - 8:30 صبح (مکہ مکرمہ ٹائم)", "روزانہ: 10:30 - 11:30 شام (مکہ مکرمہ ٹائم)"]
       ];
       default: return [
         ["الإثنين والأربعاء: 7 - 10 صباحًا (بتوقيت مكة المكرمة)", "الإثنين والأربعاء: 1 - 3 عصرًا", "الإثنين والأربعاء: 4 - 6 مساءً", "الإثنين والأربعاء: 8 - 10 مساءً"], 
         ["من الأحد إلى الخميس: 7 - 10 صباحًا (بتوقيت مكة المكرمة)"], 
         ["من السبت إلى الخميس: 7 - 10 صباحًا (بتوقيت مكة المكرمة)"], 
         ["من الاثنين إلى الأربعاء: 9 - 11 صباحًا (بتوقيت مكة المكرمة)"], 
-        ["من الأحد إلى الأربعاء: 8:30 - 10:30 مساءً (بتوقيت مكة المكرمة)"], 
         ["يومياً: 6:30 - 8:30 صباحاً (بتوقيت مكة المكرمة)", "يومياً: 10:30 - 11:30 مساءً (بتوقيت مكة المكرمة)"]
       ];
     }
@@ -300,113 +274,59 @@ export default function App() {
   const teachers = useMemo(() => {
     const schedules = getSchedules(lang);
     
-    const extraData: Record<Language, { achievements: string[][], specialties: string[][] }> = {
+    const extraData: Record<Language, { specialties: string[][] }> = {
       ar: {
-        achievements: [
-          ["مجازة في القراءات العشر", "خبرة 10 سنوات في التعليم"],
-          ["حافظة لكتاب الله كاملاً", "متخصصة في القاعدة النورانية"],
-          ["مجازة من معهد القراءات", "خبرة في تدريس غير الناطقات"],
-          ["حاصلة على شهادة الإتقان", "خبرة في حلقات المراجعة"],
-          ["متخصصة في التجويد العملي", "خبرة في تعليم الأطفال"],
-          ["مجازة في السند المتصل", "خبرة في الحفظ المكثف"]
-        ],
         specialties: [
-          ["إتقان وتجويد", "القراءات", "حفظ"],
-          ["حفظ", "قاعدة نورانية", "أطفال"],
-          ["لغير الناطقات", "تجويد", "مراجعة"],
-          ["مراجعة", "تثبيت", "حفظ"],
-          ["تجويد", "قاعدة نورانية", "تلقين"],
-          ["حفظ مكثف", "تثبيت", "إجازات"]
+          ["حفظ", "مراجعة", "قاعدة نورانية"],
+          ["حفظ", "مراجعة"],
+          ["حفظ", "مراجعة"],
+          ["حفظ", "مراجعة"],
+          ["حفظ", "مراجعة", "قاعدة نورانية"]
         ]
       },
       en: {
-        achievements: [
-          ["Certified in Ten Qira'at", "10 Years Teaching Experience"],
-          ["Full Quran Hafiza", "Certified Noorania Specialist"],
-          ["Qira'at Institute Graduate", "Non-Arabs Teaching Specialist"],
-          ["Mastery Certificate Holder", "Revision Circle Specialist"],
-          ["Practical Tajweed Specialist", "Experience with Children"],
-          ["Certified with Connected Chain", "Intensive Memorization"]
-        ],
         specialties: [
-          ["Mastery", "Qira'at", "Memorization"],
-          ["Memorization", "Noorania", "Kids"],
-          ["Non-Arabs", "Tajweed", "Revision"],
-          ["Revision", "Fixing", "Memorization"],
-          ["Tajweed", "Noorania", "Teaching"],
-          ["Intensive", "Fixing", "Ijazas"]
+          ["Memorization", "Revision", "Noorania"],
+          ["Memorization", "Revision"],
+          ["Memorization", "Revision"],
+          ["Memorization", "Revision"],
+          ["Memorization", "Revision", "Noorania"]
         ]
       },
       fr: {
-        achievements: [
-          ["Certifiée en dix Qira'at", "10 ans d'expérience"],
-          ["Hafiza certifiée", "Spécialiste Noorania"],
-          ["Diplômée de l'Institut", "Spécialiste non-arabophones"],
-          ["Certificat de maîtrise", "Spécialiste révision"],
-          ["Spécialiste Tajwid", "Expérience enfants"],
-          ["Chaîne de transmission", "Mémorisation intensive"]
-        ],
         specialties: [
-          ["Maîtrise", "Qira'at", "Mémorisation"],
-          ["Mémorisation", "Noorania", "Enfants"],
-          ["Non-arabophones", "Tajwid", "Révision"],
-          ["Révision", "Fixation", "Mémorisation"],
-          ["Tajwid", "Noorania", "Enseignement"],
-          ["Intensive", "Fixation", "Ijazas"]
+          ["Mémorisation", "Révision", "Noorania"],
+          ["Mémorisation", "Révision"],
+          ["Mémorisation", "Révision"],
+          ["Mémorisation", "Révision"],
+          ["Mémorisation", "Révision", "Noorania"]
         ]
       },
       tr: {
-        achievements: [
-          ["On Kıraat Sertifikalı", "10 Yıl Deneyim"],
-          ["Tam Kur'an Hafızı", "Nuraniye Uzmanı"],
-          ["Kıraat Enstitüsü Mezunu", "Arap Olmayanlar İçin"],
-          ["Ustalık Belgesi Sahibi", "Tekrar Halkası Uzmanı"],
-          ["Tajwid Uzmanı", "Çocuk Deneyimi"],
-          ["İcazet Sahibi", "Yoğun Ezber"]
-        ],
         specialties: [
-          ["Ustalık", "Kıraat", "Ezber"],
-          ["Ezber", "Nuraniye", "Çocuklar"],
-          ["Yabancılar", "Tajwid", "Tekrar"],
-          ["Tekrar", "Sabitleme", "Ezber"],
-          ["Tajwid", "Nuraniye", "Öğretim"],
-          ["Yoğun", "Sabitleme", "İcazet"]
+          ["Ezber", "Tekrar", "Nuraniye"],
+          ["Ezber", "Tekrar"],
+          ["Ezber", "Tekrar"],
+          ["Ezber", "Tekrar"],
+          ["Ezber", "Tekrar", "Nuraniye"]
         ]
       },
       id: {
-        achievements: [
-          ["Sertifikat 10 Qira'at", "10 Tahun Pengalaman"],
-          ["Hafiza Al-Quran 30 Juz", "Spesialis Noorania"],
-          ["Lulusan Institut Qira'at", "Pengajar Non-Arab"],
-          ["Sertifikat Kemahiran", "Spesialis Halaqah Murajaah"],
-          ["Spesialis Tajwid Praktis", "Pengalaman Anak-anak"],
-          ["Sanad Bersambung", "Hafalan Intensif"]
-        ],
         specialties: [
-          ["Kemahiran", "Qira'at", "Hafalan"],
-          ["Hafalan", "Noorania", "Anak-anak"],
-          ["Non-Arab", "Tajweed", "Murajaah"],
-          ["Murajaah", "Pemantapan", "Hafalan"],
-          ["Tajweed", "Noorania", "Pengajaran"],
-          ["Intensif", "Pemantapan", "Sanad"]
+          ["Hafalan", "Murajaah", "Noorania"],
+          ["Hafalan", "Murajaah"],
+          ["Hafalan", "Murajaah"],
+          ["Hafalan", "Murajaah"],
+          ["Hafalan", "Murajaah", "Noorania"]
         ]
       },
       ur: {
-        achievements: [
-          ["دس قراءات میں مجازہ", "10 سالہ تدریسی تجربہ"],
-          ["حافظہ قرآن", "قاعدہ نورانیہ کی ماہر"],
-          ["ادارہ قراءات کی فارغہ", "غیر عربوں کے لیے ماہر"],
-          ["استناد و مہارت", "حلقہ مراجعت کی ماہر"],
-          ["تجوید کی ماہر", "بچوں کی ماہر استانی"],
-          ["سند یافتہ", "حفظ مکثف کا تجربہ"]
-        ],
         specialties: [
-          ["مہارت و تجوید", "قراءات", "حفظ"],
-          ["حفظ", "قاعدہ نورانیہ", "بچے"],
-          ["غیر عرب", "تجوید", "دهرائی"],
-          ["دہرائی", "پختگی", "حفظ"],
-          ["تجوید", "قاعدہ نورانیہ", "تدریس"],
-          ["حفظ مکثف", "پختگی", "اجازات"]
+          ["حفظ", "دہرائی", "قاعدہ نورانیہ"],
+          ["حفظ", "دہرائی"],
+          ["حفظ", "دہرائی"],
+          ["حفظ", "دہرائی"],
+          ["حفظ", "دہرائی", "قاعدہ نورانیہ"]
         ]
       }
     };
@@ -414,7 +334,6 @@ export default function App() {
     return teacherNames[lang].map((name, i) => ({
       name,
       schedule: schedules[i],
-      achievements: extraData[lang].achievements[i] || [],
       specialties: extraData[lang].specialties[i] || []
     }));
   }, [lang, teacherNames]);
@@ -564,8 +483,9 @@ export default function App() {
             transition={{ duration: 0.8 }}
           >
             <div className="section-label">{t.hero.label}</div>
-            <h1 className={`text-7xl md:text-9xl font-bold leading-[1.1] mb-8 ${isRtl ? 'border-r-[8px] pr-6' : 'border-l-[8px] pl-6'} border-accent`}>
-              {t.hero.title1}<br /><span className="text-primary/40 italic">{t.hero.title2}</span>
+            <h1 className={`font-bold leading-[1.1] mb-8 ${isRtl ? 'border-r-[8px] pr-6' : 'border-l-[8px] pl-6'} border-accent`}>
+              <span className="text-7xl md:text-9xl block mb-4">{t.hero.title1}</span>
+              <span className="text-2xl md:text-4xl text-primary/40 font-serif italic block">{t.hero.title2}</span>
             </h1>
             <p className="text-2xl md:text-3xl text-primary/70 leading-relaxed mb-12 max-w-2xl font-serif">
               {t.hero.description}
@@ -651,7 +571,6 @@ export default function App() {
                 teacher={teacher} 
                 labels={{
                   schedule: t.schedule.label,
-                  achievements: t.schedule.achievementsLabel,
                   specialties: t.schedule.specialtiesLabel
                 }} 
               />
@@ -882,7 +801,7 @@ export default function App() {
             <div className="flex flex-col items-center md:items-start gap-10">
               <div className="section-label mb-0">{t.footer.contact}</div>
               <div className="flex gap-6">
-                <a href="#" className="w-12 h-12 bg-[#e4405f] rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform shadow-lg shadow-[#e4405f]/20" title="إنستغرام">
+                <a href="https://www.instagram.com/quranyutlaa?igsh=MWVjeHNpNTZkbzdkMg%3D%3D&utm_source=ig_contact_invite%E2%80%8E%E2%80%8F" target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-[#e4405f] rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform shadow-lg shadow-[#e4405f]/20" title="إنستغرام">
                   <Instagram size={24} />
                 </a>
                 <a href="https://wa.me/966547013085" target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-[#25D366] rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform shadow-lg shadow-[#25D366]/20" title="واتساب">
