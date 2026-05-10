@@ -1,0 +1,38 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Validation helpers
+    function isValidId(id) { 
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); 
+    }
+    
+    function incoming() { return request.resource.data; }
+    function isSignedIn() { return request.auth != null; }
+
+    function isValidRegistration(data) {
+      return data.keys().hasAll(['fullName', 'age', 'teacher', 'juz', 'whatsapp', 'createdAt']) &&
+             data.keys().size() <= 7 &&
+             data.fullName is string && data.fullName.size() > 0 && data.fullName.size() <= 100 &&
+             data.age is int && data.age >= 2 && data.age <= 120 &&
+             data.teacher is string &&
+             data.juz is string &&
+             data.whatsapp is string && data.whatsapp.matches('^[0-9]+$') &&
+             data.createdAt == request.time &&
+             (!data.keys().hasAny(['notes']) || (data.notes is string && data.notes.size() <= 1000));
+    }
+
+    match /registrations/{registrationId} {
+      // Allow creation by anyone (public registration form)
+      allow create: if isValidRegistration(incoming());
+      
+      // Prevent reading by standard users to protect privacy
+      // The admin can view these via the Firebase Console
+      allow read, update, delete: if false;
+    }
+  }
+}

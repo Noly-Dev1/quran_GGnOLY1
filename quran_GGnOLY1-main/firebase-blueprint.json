@@ -1,0 +1,47 @@
+{
+  "entities": {
+    "Registration": {
+      "title": "Student Registration",
+      "description": "Details submitted by students via the registration form",
+      "type": "object",
+      "properties": {
+        "fullName": {
+          "type": "string",
+          "description": "Full name of the student"
+        },
+        "age": {
+          "type": "integer",
+          "description": "Age of the student"
+        },
+        "teacher": {
+          "type": "string",
+          "description": "Selected teacher name"
+        },
+        "juz": {
+          "type": "string",
+          "description": "Number of juz memorized"
+        },
+        "whatsapp": {
+          "type": "string",
+          "description": "WhatsApp number in digits only"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Additional notes or preferences"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of submission"
+        }
+      },
+      "required": ["fullName", "age", "teacher", "juz", "whatsapp", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/registrations/{registrationId}": {
+      "schema": "Registration",
+      "description": "Collection of student registrations"
+    }
+  }
+}
