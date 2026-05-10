@@ -348,6 +348,7 @@ export default function App() {
       const name = formData.get('fullName') as string;
       const ageStr = formData.get('age') as string;
       const teacher = formData.get('teacher') as string;
+      const circle = formData.get('circle') as string;
       const juz = formData.get('juz') as string;
       const whatsapp = formData.get('whatsapp') as string;
       const notes = formData.get('notes') as string;
@@ -361,6 +362,7 @@ export default function App() {
           fullName: name,
           age: age,
           teacher: teacher,
+          circle: circle,
           juz: juz,
           whatsapp: whatsapp,
           notes: notes || '',
@@ -375,6 +377,7 @@ export default function App() {
         `*${t.register.fullName}:* ${name}%0A` +
         `*${t.register.age}:* ${age}%0A` +
         `*${t.register.teacher}:* ${teacher}%0A` +
+        `*${t.register.circle}:* ${circle}%0A` +
         `*${t.register.juz}:* ${juz}%0A` +
         `*${t.register.whatsapp}:* ${whatsapp}%0A` +
         `*${t.register.notes}:* ${notes || 'N/A'}`;
@@ -399,8 +402,11 @@ export default function App() {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-cream/90 backdrop-blur-sm border-b border-primary/5">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-6">
-            <div className={`text-4xl font-black text-primary font-serif ${isRtl ? 'border-r-4 pr-4' : 'border-l-4 pl-4'} border-accent`}>
-              {lang === 'ar' || lang === 'ur' ? 'قرآن يتلى' : 'Quran Sanctuary'}
+            <div className={`flex items-center gap-3 ${isRtl ? 'border-r-4 pr-4' : 'border-l-4 pl-4'} border-accent`}>
+              <img src="/favicon_logo.png" alt="Logo" className="w-12 h-12 object-contain" onError={(e) => (e.currentTarget.style.display = 'none')} />
+              <div className="text-4xl font-black text-primary font-serif">
+                {lang === 'ar' || lang === 'ur' ? 'قرآن يتلى' : 'Quran Sanctuary'}
+              </div>
             </div>
             
             <div className="hidden lg:flex items-center gap-2">
@@ -688,16 +694,25 @@ export default function App() {
                     </select>
                   </div>
                   <div className="space-y-2">
-                    <label className={`text-[10px] uppercase font-bold text-accent tracking-widest block font-sans ${isRtl ? 'text-right' : 'text-left'}`}>{t.register.juz}</label>
-                    <select name="juz" defaultValue={t.register.juzStart} className="input-editorial cursor-pointer">
-                      <option value={t.register.juzStart}>{t.register.juzStart}</option>
-                      {[...Array(30)].map((_, i) => (
-                        <option key={i + 1}>
-                          {i + 1} {t.register.juzMultiple}
-                        </option>
-                      ))}
+                    <label className={`text-[10px] uppercase font-bold text-accent tracking-widest block font-sans ${isRtl ? 'text-right' : 'text-left'}`}>{t.register.circle}</label>
+                    <select name="circle" required defaultValue="" className="input-editorial cursor-pointer">
+                      <option value="" disabled>{t.register.circlePlaceholder}</option>
+                      <option value={t.register.circleOption1}>{t.register.circleOption1}</option>
+                      <option value={t.register.circleOption2}>{t.register.circleOption2}</option>
                     </select>
                   </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className={`text-[10px] uppercase font-bold text-accent tracking-widest block font-sans ${isRtl ? 'text-right' : 'text-left'}`}>{t.register.juz}</label>
+                  <select name="juz" defaultValue={t.register.juzStart} className="input-editorial cursor-pointer">
+                    <option value={t.register.juzStart}>{t.register.juzStart}</option>
+                    {[...Array(30)].map((_, i) => (
+                      <option key={i + 1}>
+                        {i + 1} {t.register.juzMultiple}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 <div className="space-y-2">
