@@ -221,52 +221,52 @@ export default function App() {
     fr: ["Arwa", "Yomna", "Manar", "Fatima", "Somaya"],
     tr: ["Arwa", "Yomna", "Manar", "Fatima", "Somaya"],
     id: ["Arwa", "Yomna", "Manar", "Fatima", "Somaya"],
-    ur: ["استانی ارویٰ", "استانی یمنیٰ", "استانی منار", "استانی فاطمہ", "استانی سمیہ"]
+    ur: ["استانی ارویٰ", "استانی یمنیٰ", "استانی منار", "استانی فاطمہ", "استانی سمیه"]
   };
 
   const getSchedules = (langCode: Language): string[][] => {
     switch(langCode) {
       case 'en': return [
-        ["Mon/Wed: 7-10 AM (Makkah Time)", "Mon/Wed: 1-3 PM", "Mon/Wed: 4-6 PM", "Mon/Wed: 8-10 PM"], 
-        ["Sun-Thu: 7-10 AM (Makkah Time)"], 
-        ["Sat-Thu: 7-10 AM (Makkah Time)"], 
-        ["Mon-Wed: 9-11 AM (Makkah Time)"], 
-        ["Daily: 6:30 - 8:30 AM (Makkah Time)", "Daily: 10:30 - 11:30 PM (Makkah Time)"]
+        ["Sun/Wed: 3-6 PM (Memorization)", "Sat/Tue: 7-10 AM (Revision)", "Sat/Mon/Wed: 7-9 PM"], 
+        ["Sun-Thu: 7-10 AM"], 
+        ["Sun-Thu: 3-5 PM"], 
+        ["Mon-Wed: 9-11 AM"], 
+        ["Daily: 6:30 - 8:30 AM", "Daily: 10:30 - 11:30 PM"]
       ];
       case 'fr': return [
-        ["Lun/Mer: 7-10h (Heure Mecque)", "Lun/Mer: 13-15h", "Lun/Mer: 16-18h", "Lun/Mer: 20-22h"], 
-        ["Dim-Jeu: 7-10h (Heure Mecque)"], 
-        ["Sam-Jeu: 7-10h (Heure Mecque)"], 
-        ["Lun-Mer: 9-11h (Heure Mecque)"], 
-        ["Tous les jours: 6:30 - 8:30 (Heure Mecque)", "Tous les jours: 22:30 - 23:30 (Heure Mecque)"]
+        ["Dim/Mer: 15-18h (Mémorisation)", "Sam/Mar: 7-10h (Révision)", "Sam/Lun/Mer: 19-21h"], 
+        ["Dim-Jeu: 7-10h"], 
+        ["Dim-Jeu: 15-17h"], 
+        ["Lun-Mer: 9-11h"], 
+        ["Tous les jours: 6:30 - 8:30", "Tous les jours: 22:30 - 23:30"]
       ];
       case 'tr': return [
-        ["Pzt/Çar: 07:00-10:00 (Mekke Saati)", "Pzt/Çar: 13:00-15:00", "Pzt/Çar: 16:00-18:00", "Pzt/Çar: 20:00-22:00"], 
-        ["Paz-Per: 07:00-10:00 (Mekke Saati)"], 
-        ["Cmt-Per: 07:00-10:00 (Mekke Saati)"], 
-        ["Pzt-Çar: 09:00-11:00 (Mekke Saati)"], 
-        ["Her gün: 06:30 - 08:30 (Mekke Saati)", "Her gün: 22:30 - 23:30 (Mekke Saati)"]
+        ["Paz/Çar: 15:00-18:00 (Ezber)", "Cmt/Sal: 07:00-10:00 (Tekrar)", "Cmt/Pzt/Çar: 19:00-21:00"], 
+        ["Paz-Per: 07:00-10:00"], 
+        ["Paz-Per: 15:00-17:00"], 
+        ["Pzt-Çar: 09:00-11:00"], 
+        ["Her gün: 06:30 - 08:30", "Her gün: 22:30 - 23:30"]
       ];
       case 'id': return [
-        ["Sen/Rab: 07:00-10:00 (Waktu Makkah)", "Sen/Rab: 13:00-15:00", "Sen/Rab: 16:00-18:00", "Sen/Rab: 20:00-22:00"], 
-        ["Aha-Kam: 07:00-10:00 (Waktu Makkah)"], 
-        ["Sab-Kam: 07:00-10:00 (Waktu Makkah)"], 
-        ["Sen-Rab: 09:00-11:00 (Waktu Makkah)"], 
-        ["Setiap hari: 06:30 - 08:30 (Waktu Makkah)", "Setiap hari: 22:30 - 23:30 (Waktu Makkah)"]
+        ["Aha/Rab: 15:00-18:00 (Hafalan)", "Sab/Sel: 07:00-10:00 (Murajaah)", "Sab/Sen/Rab: 19:00-21:00"], 
+        ["Aha-Kam: 07:00-10:00"], 
+        ["Aha-Kam: 15:00-17:00"], 
+        ["Sen-Rab: 09:00-11:00"], 
+        ["Setiap hari: 06:30 - 08:30", "Setiap hari: 22:30 - 23:30"]
       ];
       case 'ur': return [
-        ["پیر/بدھ: 7 - 10 بجے صبح (مکہ مکرمہ ٹائم)", "پیر/بدھ: 1 - 3 بجے دوپہر", "پیر/بدھ: 4 - 6 بجے شام", "پیر/بدھ: 8 - 10 بجے رات"], 
-        ["اتوار تا جمعرات: 7 - 10 بجے صبح (مکہ مکرمہ ٹائم)"], 
-        ["ہفتہ تا جمعرات: 7 - 10 بجے صبح (مکہ مکرمہ ٹائم)"], 
-        ["پیر تا بدھ: 9 - 11 بجے صبح (مکہ مکرمہ ٹائم)"], 
-        ["روزانہ: 6:30 - 8:30 صبح (مکہ مکرمہ ٹائم)", "روزانہ: 10:30 - 11:30 شام (مکہ مکرمہ ٹائم)"]
+        ["اتوار اور بدھ: 3 - 6 بجے شام (حفظ کا حلقہ)", "ہفتہ اور منگل: 7 - 10 بجے صبح (دہرائی کا حلقہ)", "ہفتہ، پیر اور بدھ: 7 - 9 بجے رات"], 
+        ["اتوار تا جمعرات: 7 - 10 بجے صبح"], 
+        ["اتوار تا جمعرات: 3 - 5 بجے شام"], 
+        ["پیر تا بدھ: 9 - 11 بجے صبح"], 
+        ["روزانہ: 6:30 - 8:30 صبح", "روزانہ: 10:30 - 11:30 شام"]
       ];
       default: return [
-        ["الإثنين والأربعاء: 7 - 10 صباحًا (بتوقيت مكة المكرمة)", "الإثنين والأربعاء: 1 - 3 عصرًا", "الإثنين والأربعاء: 4 - 6 مساءً", "الإثنين والأربعاء: 8 - 10 مساءً"], 
-        ["من الأحد إلى الخميس: 7 - 10 صباحًا (بتوقيت مكة المكرمة)"], 
-        ["من السبت إلى الخميس: 7 - 10 صباحًا (بتوقيت مكة المكرمة)"], 
-        ["من الاثنين إلى الأربعاء: 9 - 11 صباحًا (بتوقيت مكة المكرمة)"], 
-        ["يومياً: 6:30 - 8:30 صباحاً (بتوقيت مكة المكرمة)", "يومياً: 10:30 - 11:30 مساءً (بتوقيت مكة المكرمة)"]
+        ["الأحد والأربعاء: 3 - 6 مساءً (حلقة الحفظ)", "السبت والثلاثاء: 7 - 10 صباحًا (حلقة المراجعة)", "السبت والإثنين والأربعاء: 7 - 9 مساءً"], 
+        ["من الأحد إلى الخميس: 7 - 10 صباحًا"], 
+        ["من الأحد إلى الخميس: 3 - 5 مساءً"], 
+        ["من الاثنين إلى الأربعاء: 9 - 11 صباحًا"], 
+        ["يومياً: 6:30 - 8:30 صباحاً", "يومياً: 10:30 - 11:30 مساءً"]
       ];
     }
   };
@@ -568,7 +568,10 @@ export default function App() {
       <section id="schedule" className="py-32 bg-sand">
         <div className="max-w-7xl mx-auto px-6">
           <div className="section-label text-center">{t.schedule.label}</div>
-          <h2 className="text-5xl font-bold text-center mb-20 italic">{t.schedule.title}</h2>
+          <h2 className="text-5xl font-bold text-center mb-6 italic">{t.schedule.title}</h2>
+          <p className="text-primary/60 text-lg font-serif text-center mb-20">
+            {t.schedule.note}
+          </p>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {teachers.map((teacher, idx) => (
@@ -581,12 +584,6 @@ export default function App() {
                 }} 
               />
             ))}
-          </div>
-          
-          <div className="mt-16 text-center">
-            <p className="text-primary/60 text-lg font-serif">
-              {t.schedule.note}
-            </p>
           </div>
         </div>
       </section>
