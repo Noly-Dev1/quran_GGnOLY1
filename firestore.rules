@@ -15,13 +15,14 @@ service cloud.firestore {
     function isSignedIn() { return request.auth != null; }
 
     function isValidRegistration(data) {
-      return data.keys().hasAll(['fullName', 'age', 'teacher', 'juz', 'whatsapp', 'createdAt']) &&
-             data.keys().size() <= 7 &&
+      return data.keys().hasAll(['fullName', 'age', 'teacher', 'circle', 'juz', 'whatsapp', 'createdAt']) &&
+             data.keys().size() <= 8 &&
              data.fullName is string && data.fullName.size() > 0 && data.fullName.size() <= 100 &&
              data.age is int && data.age >= 2 && data.age <= 120 &&
-             data.teacher is string &&
-             data.juz is string &&
-             data.whatsapp is string && data.whatsapp.matches('^[0-9]+$') &&
+             data.teacher is string && data.teacher.size() > 0 && data.teacher.size() <= 100 &&
+             data.circle is string && data.circle.size() > 0 && data.circle.size() <= 100 &&
+             data.juz is string && data.juz.size() > 0 && data.juz.size() <= 100 &&
+             data.whatsapp is string && data.whatsapp.matches('^[0-9]+$') && data.whatsapp.size() <= 30 &&
              data.createdAt == request.time &&
              (!data.keys().hasAny(['notes']) || (data.notes is string && data.notes.size() <= 1000));
     }

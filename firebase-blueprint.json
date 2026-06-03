@@ -17,6 +17,10 @@
           "type": "string",
           "description": "Selected teacher name"
         },
+        "circle": {
+          "type": "string",
+          "description": "Selected circle type"
+        },
         "juz": {
           "type": "string",
           "description": "Number of juz memorized"
@@ -35,7 +39,7 @@
           "description": "Timestamp of submission"
         }
       },
-      "required": ["fullName", "age", "teacher", "juz", "whatsapp", "createdAt"]
+      "required": ["fullName", "age", "teacher", "circle", "juz", "whatsapp", "createdAt"]
     }
   },
   "firestore": {
